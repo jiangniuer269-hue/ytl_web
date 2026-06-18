@@ -1,11 +1,5 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: tei
- * Date: 2019/7/28
- * Time: 8:01 PM
- */
 
 namespace app\index\controller;
 
@@ -25,10 +19,6 @@ use think\cache\driver\Redis;
 
 class Login
 {
-    const HTTPURL = 'http://27.124.44.146:9204';
-   
-    const  JILI_IP = '47.238.194.209';//吉利ip
-    const  QILIN_IP = '47.238.194.209';//麒麟ip
     /**
      * @function 登陆页面
      */
@@ -1187,10 +1177,8 @@ class Login
             // http://shangshui_im.shanghaimetal.org
             //http://shangshui_im.yiweidao.cn/
              $im_url_arr = [
-                 'http://47.101.143.146:8588',
-                // 'http://27.124.44.153:8588',
-                 //'http://82.23.246.149:8588', 
-               // 'http://154.23.221.76:8588',
+                 'http://47.86.246.4:8788',
+
              ];
              if (in_array( $member['tid'],[5,262,560])) {
                  $im_url_arr = [
