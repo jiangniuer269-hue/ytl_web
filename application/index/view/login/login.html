@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{$title}</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <link rel="shortcut icon" href="{$domain}/front/images/salon/group.png" type="image/x-icon"/>
+    <link rel="stylesheet" href="{$domain}/front/dist/css/weui.min.css">
+    <link rel="stylesheet" href="{$domain}/front/dist/css/jquery-weui.css">
+    <link rel="stylesheet" href="{$domain}/front/css/demos.css?v=1000">
+</head>
+
+<body ontouchstart>
+<header class='demos-header'>
+    <img src="{$domain}/front/images/salon/group.png?v=1006"/>
+</header>
+
+<div class="weui-cells__title">登录</div>
+<div class="weui-cell">
+    <div class="weui-cell__hd">
+        <label class="weui-label">用户名</label>
+    </div>
+    <div class="weui-cell__bd">
+        <input class="weui-input" autocomplete="off" id="username" type="text" placeholder="请输入用户名">
+    </div>
+</div>
+<div class="weui-cell">
+    <div class="weui-cell__hd">
+        <label class="weui-label">密码</label>
+    </div>
+    <div class="weui-cell__bd">
+        <input class="weui-input" id="password" type="password" placeholder="请输入密码">
+    </div>
+</div>
+
+
+</div>
+<div class="weui-btn-area">
+    <a class="weui-btn weui-btn_primary" href="javascript:void(0)" onclick="login()" id="loginbtn">登录</a>
+</div>
+<div class="weui-btn-area">
+    <a class="weui-btn weui-btn_primary" href="javascript:void(0)" onclick="login_yk()" id="loginbtnyk"
+       style="background-color: rgba(89, 1, 150, 0.95)">游客登录</a>
+</div>
+<script src="{$domain}/front/dist/js/jquery-2.1.4.js"></script>
+<script src="{$domain}/front/dist/js/fastclick.js"></script>
+<script>
+    $(function () {
+        FastClick.attach(document.body);
+    });
+</script>
+<script src="{$domain}/front/dist/js/jquery-weui.js"></script>
+
+<script>
+    $(document).on("click", "#show-toast", function () {
+                $.toast("操作成功", function () {
+                    console.log('close');
+                });
+            })
+            .on("click", "#show-toast-cancel", function () {
+                $.toast("取消操作", "cancel", function (toast) {
+                    console.log(toast);
+                });
+            })
+            .on("click", "#show-toast-forbidden", function () {
+                $.toast("禁止操作", "forbidden");
+            })
+            .on("click", "#show-toast-text", function () {
+                $.toast("纯文本", "text");
+            })
+            .on("click", "#show-loading", function () {
+                $.showLoading();
+
+                setTimeout(function () {
+                    $.hideLoading();
+                }, 3000)
+            });
+
+    function login() {
+        var username = $.trim($('#username').val());
+        var password = $.trim($('#password').val());
+        var flag = true;
+        if (username == '') {
+            $.toptip('用户名不能为空', 'error');
+            return;
+        }
+        if (password == '') {
+            $.toptip('密码不能为空', 'error');
+            return;
+        }
+        if (!flag) {
+            return;
+        }
+        var data = {username: username, password: password, user_type: 2};
+        $.ajax({
+            type: "POST",
+            url: '/Login/DoLogin',
+            async: false,
+            data: data,
+            success: function (rtnData) {
+                if (rtnData.code == 500) {
+                    $.toptip(rtnData.msg, 'error');
+                } else {
+                    window.location.href = '/index/index';
+                }
+            }
+        });
+    }
+
+    //游客登录
+    function login_yk() {
+
+        var flag = true;
+        if (!flag) {
+            return;
+        }
+        var data = {user_type: 1};
+        $.ajax({
+            type: "POST",
+            url: '/Login/DoLogin',
+            async: false,
+            data: data,
+            success: function (rtnData) {
+                if (rtnData.code == 500) {
+                    $.toptip(rtnData.msg, 'error');
+                } else {
+                    window.location.href = '/index/index';
+                }
+            }
+        });
+    }
+</script>
+</body>
+</html>
+

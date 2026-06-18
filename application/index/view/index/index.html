@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{$title}</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <link rel="shortcut icon" href="/front/images/salon/group.png" type="image/x-icon"/>
+    <!--js-->
+    <script src="/front/dist/js/jquery-2.1.4.js"></script>
+    <script src="/front/dist/js/jquery-weui.js"></script>
+    <script src="/front/dist/js/jquery-ui.min.js"></script>
+    <!--css-->
+    <link href="/front/dist/css/weui.min.css" rel="stylesheet">
+    <link href="/front/dist/css/jquery-weui.min.css" rel="stylesheet">
+    <link href="/front/dist/css/weui.css" rel="stylesheet">
+    <link href="/front/dist/css/weui2.css" rel="stylesheet">
+    <!--js-->
+    <script src="/front/dist/js/swiper.js"></script>
+    <script src="/front/dist/js/fastclick.js"></script>
+    <script src="/front/dist/js/ajaxfileupload.js"></script>
+    <!--css-->
+    <link href="/front/css/demos.css" rel="stylesheet">
+    <link href="/front/css/mobile.css" rel="stylesheet">
+    <link href="/front/css/css.css?v={$time}" rel="stylesheet">
+    <link href="/front/css/chat.css?v={$time}" id="layuicss-skinlayim-mobilecss" media="all" rel="stylesheet">
+    <link href="/front/css/pop.css" rel="stylesheet">
+    <link href="/front/css/time_css.css" rel="stylesheet">
+    <link href="/front/css/road.css" rel="stylesheet">
+    <link href="/front/css/reset.css" rel="stylesheet">
+    <!--video-js-->
+    <!--<script src="/front/js/flv.min.js"></script>-->
+    <!--<script src="/front/js/flvPlayer.js"></script>-->
+    <script src="/front/js/NodePlayer.v3.min.js"></script>
+    <script src="/front/js/ws4.js"></script>
+    <script src="/front/js/video.js"></script>
+    <!--js-->
+    <script src="/front/js/message.js?v={$time}"></script>
+    <script src="/front/js/time.js"></script>
+    <script src="/front/js/bottom.js?v={$time}"></script>
+    <script src="/front/js/websocket.js??v={$time}"></script>
+</head>
+
+<body ontouchstart onload="blinkcolor()">
+<input id="use_xyl" type="hidden" value="1"/>
+<input id="wsurl" type="hidden" value="{$wsurl}"/>
+<input id="mdtime" type="hidden" value="{$time}"/>
+<input id="token" type="hidden" value="{$token}"/>
+<input id="nickname" type="hidden" value="{$member['nickname']}"/>
+<input id="username" type="hidden" value="{$member['username']}"/>
+<input id="user_type" type="hidden" value="{$user_type}"/>
+<div class="weui-tab">
+    <div class="begincountDown"
+         style="background:url('/front/images/timeCount.png') no-repeat; background-size:100% 100%;display:none;text-align: center;
+    line-height: 40px;
+    font-size: 20px;
+    color: #ebbb5f;
+    width: 55px;
+    height: 55px;
+    position: absolute;
+    right: 4px;
+    top: 30px;
+    z-index: 1999;">
+        00
+    </div>
+    <div class="weui-tab__bd pagelevel1" id="mainpannel">
+        <!--消息页面-->
+        <div id="tab1" class="weui-tab__bd-item weui-tab__bd-item--active">
+            <div style="margin-bottom:50px;">
+                <div id="frontmessagepannel" class="weui-panel weui-panel_access">
+                    <div class="weui-panel__bd" id="newmessage">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--个人页面-->
+        <div id="tab3" class="weui-tab__bd-item ">
+            <div class="weui_cells weui_cells_form weui-panel">
+                <div class="weui-cell touxiang">
+                    <a href="javascript:void(0);" class="weui-media-box_appmsg">
+                        {empty name="$member['head']"}
+                        <div class="tx_pic_left" style="text-align: center;line-height: 90px" id="firstname_color"
+                             onclick="triggerUpload()">
+                            <span style="font-size: 50px;font-family: 微软雅黑;color:rgba(255,255,255,6);"
+                                  id="firstname"></span>
+                        </div>
+                        {else /}
+                        <div class="tx_pic_left" onclick="triggerUpload()">
+                            <img src="{$member['head']}" class="weui-media-box__thumb" id="userHeadImg"/>
+                        </div>
+                        {/empty}
+
+                    </a>
+                    <div class="tx_pic_right" style="display: none;">
+                        <div class="tx_pic_right_1">头像上传</div>
+                        <div class="tx_pic_right_2">
+                            <input class="weui-btn weui-btn_mini weui-btn_default" type="file" name="uploadfile" id="uploadfile" onchange="uploadfile()">
+                        </div>
+                        <!--<div class="tx_pic_right_3">-->
+                        <!--<a id="btnChangeHeadImg" class="weui-btn weui-btn_mini weui-btn_primary">修改</a>-->
+                        <!--</div>-->
+                    </div>
+                    <div class="tx_pic_right">
+                        <div class="weui_cell">
+                            <div class="weui_cell_hd">
+                                <label class="weui_label">用户ID</label>
+                            </div>
+                            <div class="weui_cell_bd weui_cell_primary">
+                                <span>{$member['uid']}</span>
+                            </div>
+                        </div>
+                        <div class="weui_cell">
+                            <div class="weui_cell_hd">
+                                <label class="weui_label">用户账号</label>
+                            </div>
+                            <div class="weui_cell_bd weui_cell_primary">
+                                <span>{$member['username']}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="weui-cells__title" style="font-size:16px;">昵称修改</div>
+            <div class="weui_cell weui_vcode" style="background-color: #fff;">
+                <div class="weui_cell_hd">
+                    <label class="weui_label">昵称</label></div>
+                <div class="weui_cell_bd weui_cell_primary">
+                    <input class="weui_input" type="text" id="txtModifyNickName" placeholder="昵称"
+                           value="{$member['nickname']}"/>
+                </div>
+                <div class="weui_cell_ft">
+                    <a href="javascript:;" id="btnModifyNickName" class="weui-vcode-btn">修改</a>
+                </div>
+            </div>
+            <div class="weui-cells__title change_pwd_box" style="font-size:16px;">密码修改</div>
+            <div class="weui_cells weui_cells_form weui-panel change_pwd_box">
+                <div class="weui_cell">
+                    <div class="weui_cell_hd">
+                        <label class="weui_label">旧密码</label>
+                    </div>
+                    <div class="weui_cell_bd weui_cell_primary">
+                        <input class="weui_input" id="txtoldpwd" type="password" placeholder="请输入旧密码"/>
+                    </div>
+                </div>
+                <div class="weui_cell">
+                    <div class="weui_cell_hd">
+                        <label class="weui_label">新密码</label>
+                    </div>
+                    <div class="weui_cell_bd weui_cell_primary">
+                        <input class="weui_input" id="txtnewpwd1" type="password" placeholder="请输入新密码"/>
+                    </div>
+                </div>
+                <div class="weui_cell weui_vcode">
+                    <div class="weui_cell_hd">
+                        <label class="weui_label">密码确认</label>
+                    </div>
+                    <div class="weui_cell_bd weui_cell_primary">
+                        <input class="weui_input" id="txtnewpwd2" type="password" placeholder="请再次输入密码"/>
+                    </div>
+                    <div class="weui_cell_ft">
+                        <a href="javascript:;" id="btnModifyPwd" class="weui-vcode-btn">修改</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="weui-btn-area">
+                <a class="weui-btn weui-btn_warn" href="/Login/LoginOut" id="showTooltips">退出登录</a>
+            </div>
+        </div>
+        <!--底部导航栏-->
+        <div class="weui-tabbar" id="weui-tabbar">
+            <a title="#tab1" onclick="changeTab(this)" class="weui-tabbar__item weui-bar__item--on">
+                <div class="weui-tabbar__icon" style="position: relative;">
+                    <img src="/front/images/icon_nav_button.png?v=101" alt="">
+                </div>
+                <p class="weui-tabbar__label">进入游戏群</p>
+            </a>
+            <a title="#tab3" onclick="changeTab(this)" class="weui-tabbar__item"
+               style="border-left: 1px solid #e1e1e1;">
+                <div class="weui-tabbar__icon">
+                    <img src="/front/images/icon_nav_cell.png?v=104" alt="">
+                </div>
+                <p class="weui-tabbar__label">会员设定</p>
+            </a>
+        </div>
+    </div>
+
+    <div id="statictemplates" style="display:none">
+        <!--好友聊天信息模版-->
+        <ul id="chatfriend_template">
+            <li class="layim-chat-li chatcontents" style="margin-right: 60px;" data-msgid="${msgid}">
+                <div class="layim-chat-user">
+                    ${headimage}
+                    <!--<img class="headimage" ${headimage}/>-->
+                </div>
+                <div class="layim-chat-text chattext" style="font-size:16px;">
+                    <h1></h1>
+                </div>
+            </li>
+        </ul>
+        <!--系统通知消息模板-->
+        <ul id="chatAdmin_template">
+            <li class="layim-chat-li chatcontents" style="margin-right: 60px;" data-msgid="${msgid}">
+                <div class="layim-chat-user">
+                    ${headimage}
+                    <!--<img class="headimage" ${headimage}/>-->
+                </div>
+                <div class="layim-chat-text layim-chat-text-a chattext" style="font-size:16px;width: 100%">
+                    <h1></h1>
+                </div>
+            </li>
+        </ul>
+        <!--牌局结果消息模板-->
+        <ul id="chatRes_template">
+            <li class="layim-chat-li chatcontents" style="margin-right: 60px;" data-msgid="${msgid}">
+                <div class="layim-chat-user">
+                    ${headimage}
+                    <!--<img class="headimage" ${headimage}/>-->
+                </div>
+                <div class="layim-chat-text layim-chat-text-a chattext" style="font-size:16px;width: 100%;">
+                    <img src="/front/images/res.png" height="135px">
+                </div>
+            </li>
+        </ul>
+        <!--我的聊天信息模版-->
+        <ul id="chatmy_template">
+            <li class="layim-chat-li layim-chat-mine chatcontents" data-msgid="${msgid}" uuid="${uuid}"
+                style="margin-left:60px;">
+                <div class="layim-chat-user">
+                    ${headimage}
+                    <!--<img class="headimage" ${headimage}/>-->
+                </div>
+
+                <div class="layim-chat-text chattext" style="font-size:16px;">
+                </div>
+            </li>
+        </ul>
+        <!--首页群组页面模版-->
+        <div id="message_template">
+            <a href="javascript:void(0);" onclick="beginchat(this,${id},${type},${mark})"
+               class="msgbox weui-media-box weui-media-box_appmsg">
+                <div class="weui-media-box__hd msgbox-notread">
+                    <img class="weui-media-box__thumb" ${headimage} style="border-radius:50px;">
+                    <span class="not-read-span-box"></span>
+                </div>
+                <div class="weui-media-box__bd">
+                    <h4 class="weui-media-box__title">
+                        ${nickname} ${xstate}
+                        <span class="weui-media-box__title-after">${time}</span>
+                    </h4>
+                    <p class="weui-media-box__desc">${msg}</p>
+                </div>
+            </a>
+        </div>
+        <!--群成员模板-->
+        <div id="groupuser_template">
+            <div class="weui-flex__item" style="padding: 10px;">
+                <div>
+                    <img width="100%" ${headimage}/>
+                </div>
+                <p class="weui-media-box__desc" style="text-align: center;padding-top:3px;">${nickname}</p>
+            </div>
+        </div>
+        <!-- 刷新按钮模板-->
+        <!--        <div id="btnfresh_template">-->
+        <!--            <a class="scrollItemright" onclick="beginchat(this,${groupid},0)">刷新</a>-->
+        <!--        </div>-->
+        <!--换台模板-->
+        <div id="changetb_template">
+            <a class="scrollItemright" onclick="opentbInfo(${userid},${groupid})">换台</a>
+        </div>
+        <!--图片模板-->
+        <div id="pic_template">
+            <img class="chatuploadimage" onclick="viewchatimage(this)" ${imgurl} style="width:100px;"/>
+        </div>
+    </div>
+    <!--被迫下线通知-->
+    <div class="alertmsgmask">
+        <div class="alertmsgbox">
+            <div class="title">提示</div>
+            <div class="content">您的账号已在其他地方登陆，如非本人操作，请及时修改密码。</div>
+            <div class="foot">
+                <div class="button gotoLogin">确定</div>
+            </div>
+        </div>
+    </div>
+
+    <!--不允许发消息提示-->
+    <div class="onlyCanWatch">
+        <div class="alertmsgbox">
+            <div class="title">提示</div>
+            <div class="content">此房间只提供观看视频，不接受发言和投注。</div>
+            <div class="foot">
+                <div class="button closeOnlyCanWatch">确定</div>
+            </div>
+        </div>
+    </div>
+
+    <!--游客不允许修改提示-->
+    <div class="onlyCanWatchYK">
+        <div class="alertmsgbox">
+            <div class="title">提示</div>
+            <div class="content"></div>
+            <div class="foot">
+                <div class="button closeOnlyCanWatchYK">确定</div>
+            </div>
+        </div>
+    </div>
+
+    <!--聊天界面-->
+    <div class="layui-m-layer layui-m-layer1 pagelevel1" id="chatpannel" style="display:none;z-index:1000;">
+
+        <div class="layui-m-layermain">
+            <div class="layui-m-layersection">
+                <div class="layui-m-layerchild  layui-m-anim--1">
+                    <div class="layui-m-layercont">
+                        <div class="layim-panel layui-m-anim-left">
+
+                            <div class="layim-title" id="topHeaad">
+                                <p>
+                                <div onclick="backtomessagepage()" class="topbar im-back">
+                                    <img src="/front/images/left1.png">
+                                </div>
+                                <div class="topbar im-speaker">
+                                    <img src="/front/images/horn.png">
+                                </div>
+                                <div class="zoumadeng">
+                                    <marquee id="sysinfo" width="100%" behavior=scroll direction=left align=middle
+                                             loop="-1">
+                                        {$notice}
+                                    </marquee>
+                                </div>
+                                <div class="th_money">
+                                    余额:<span id="mscore">0</span>
+                                </div>
+                                </p>
+                            </div>
+                            <div class="layui-unselect layim-content" id="contentdiv">
+                                <div class="layim-chat layim-chat-friend">
+                                    <div class="layim-chat-main" id="chatcontentmain">
+                                        <ul id="messagepannel"></ul>
+                                    </div>
+                                    <div class="layim-chat-footer">
+                                        <div class="layim-chat-send" id="footer_tab1">
+                                            <span title="查看其它" onclick="selectTab2()" class="plus"></span>
+                                            <!--<span title="选择动图" onclick="selectgif()" class="dongtu"></span>-->
+                                            <span title="选择键盘" onclick="switchKeyboard()" class="jianpan"></span>
+                                            <input placeholder="消息" rows="1" id="msginput_textarea" required/>
+                                            <button id="sendmsgchatbtn"></button>
+                                        </div>
+                                        <div class="layim-chat-send" id="footer_tab2"
+                                             style="display:none;border-top:1px solid #e1e1e1;">
+                                            <span title="返回消息" onclick="selectTab1()" class="note"></span>
+                                            <div class="page__bd" style="width:100%;height:45px;">
+                                                <div class="weui-tab">
+                                                    <div class="weui-navbar">
+                                                        <div class="weui-menu-inner" onclick="openbetrecord()">
+                                                            <span>投注记录</span>
+                                                        </div>
+                                                        <div class="weui-menu-inner" onclick="opengamerecord()">
+                                                            <span>牌局记录</span>
+                                                        </div>
+                                                        <div class="weui-menu-inner" onclick="openteach()">
+                                                            <span>下注指令</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--<div class="layui-m-layerchild layim-layer layui-m-anim-scale" id="emotionpannel"-->
+                                    <!--style="display: none;">-->
+                                    <!--<div class="layui-m-layercont">-->
+                                    <!--<ul class="layui-layim-face">-->
+                                    <!--<li></li>-->
+                                    <!--</ul>-->
+                                    <!--</div>-->
+                                    <!--</div>-->
+                                    <!--<div class="layui-m-layerchild layim-layer layui-m-anim-scale" id="gifpannel"-->
+                                    <!--style="display: none;">-->
+                                    <!--<div class="layui-m-layercont" style="position:relative;">-->
+                                    <!--<ul class="layui-layim-face2">-->
+                                    <!--<li title="[来对]">-->
+                                    <!--<img src="/front/images/gif/4.gif">-->
+                                    <!--</li>-->
+                                    <!--<li title="[不庄]">-->
+                                    <!--<img src="/front/images/gif/5.gif">-->
+                                    <!--</li>-->
+                                    <!--<li title="[不闲]">-->
+                                    <!--<img src="/front/images/gif/6.gif">-->
+                                    <!--</li>-->
+                                    <!--<li title="[来和]">-->
+                                    <!--<img src="/front/images/gif/7.gif">-->
+                                    <!--</li>-->
+                                    <!--<li title="[孖对]">-->
+                                    <!--<img src="/front/images/gif/8.gif">-->
+                                    <!--</li>-->
+                                    <!--<li title="[牛B]">-->
+                                    <!--<img src="/front/images/gif/9.gif">-->
+                                    <!--</li>-->
+                                    <!--<li title="[滚]">-->
+                                    <!--<img src="/front/images/gif/10.gif">-->
+                                    <!--</li>-->
+                                    <!--<li title="[天路]">-->
+                                    <!--<img src="/front/images/gif/11.gif">-->
+                                    <!--</li>-->
+                                    <!--<li title="[上车]">-->
+                                    <!--<img src="/front/images/gif/12.gif">-->
+                                    <!--</li>-->
+                                    <!--<li title="[开长庄]">-->
+                                    <!--<img src="/front/images/gif/13.gif">-->
+                                    <!--</li>-->
+                                    <!--<li title="[开长闲]">-->
+                                    <!--<img src="/front/images/gif/14.gif">-->
+                                    <!--</li>-->
+                                    <!--<li title="[决战天亮]">-->
+                                    <!--<img src="/front/images/gif/15.gif">-->
+                                    <!--</li>-->
+                                    <!--<li title="[寻找自己]">-->
+                                    <!--<img src="/front/images/gif/16.gif">-->
+                                    <!--</li>-->
+                                    <!--<li title="[精神上水]">-->
+                                    <!--<img src="/front/images/gif/17.gif">-->
+                                    <!--</li>-->
+                                    <!--<li title="[不要脸]">-->
+                                    <!--<img src="/front/images/gif/18.gif">-->
+                                    <!--</li>-->
+                                    <!--<li title="[收米]">-->
+                                    <!--<img src="/front/images/gif/19.gif">-->
+                                    <!--</li>-->
+                                    <!--<li title="[漂亮]">-->
+                                    <!--<img src="/front/images/gif/20.gif">-->
+                                    <!--</li>-->
+                                    <!--<li title="[庄]">-->
+                                    <!--<img src="/front/images/gif/21.gif">-->
+                                    <!--</li>-->
+                                    <!--<li title="[闲]">-->
+                                    <!--<img src="/front/images/gif/22.gif">-->
+                                    <!--</li>-->
+                                    <!--<li title="[和]">-->
+                                    <!--<img src="/front/images/gif/23.gif">-->
+                                    <!--</li>-->
+                                    <!--<li title="[三宝]">-->
+                                    <!--<img src="/front/images/gif/24.gif">-->
+                                    <!--</li>-->
+                                    <!--</ul>-->
+                                    <!--</div>-->
+                                    <!--</div>-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="scrollleft">
+            <div id="toBottom" class="scrollItemleft">
+                <img src="/front/images/down.png"/>
+            </div>
+        </div>
+        <div class="thisrecord">
+            <table>
+                <thead>
+                <tr>
+                    <th><span class="taihao"></span><span>台</span></th>
+                </tr>
+                <tr>
+                    <th>本局记录</th>
+                </tr>
+                </thead>
+                <tbody id="thisRecord">
+                </tbody>
+            </table>
+        </div>
+        <div id="scrollright4">
+        </div>
+        <div id="scrollright3">
+        </div>
+        <div id="scrollright2">
+            <a class="scrollItemright" onclick="openvideo()">视频
+            </a>
+        </div>
+        <div id="scrollright1">
+            <a class="scrollItemright" onclick="openroad2()">路单
+            </a>
+        </div>
+    </div>
+
+    <!--下注记录-->
+    <div id="betrecordpannel" class="pop" style="display:none;z-index:2000">
+        <div class="box">
+            <b class="closeb" onclick="closeBox('betrecordpannel')"></b>
+            <h1>我的投注记录</h1>
+            <hr/>
+            <div class="st" id="tbBetRecord" style="margin-right: 10px">
+                <!--<div class="inputqy">-->
+                <!--<input type="text" id='betbegintime' class="beginTime">-->
+                <!--<input type="text" id='betendtime' class="endTime"/>-->
+                <!--<button class="button_yes" id="searchBetRecord">-->
+                <!--查询-->
+                <!--</button>-->
+                <!--</div>-->
+            </div>
+        </div>
+        <h1></h1>
+    </div>
+    <!--牌局记录-->
+    <div id="gamerecordpannel" class="pop" style="display:none;z-index:2000">
+        <div class="box">
+            <b class="closeb" onclick="closeBox('gamerecordpannel')"></b>
+            <h1>牌局记录</h1>
+            <hr/>
+            <div class="st" id="tbGameResult">
+
+            </div>
+
+        </div>
+        <h1></h1>
+    </div>
+    <!--下注表界面-->
+    <!--<div id="stopbetrecordpannel" class="pop" style="display:none;z-index:2000">-->
+    <!--<div class="box">-->
+    <!--<b class="closeb" onclick="closeBox('stopbetrecordpannel')"></b>-->
+    <!--<span class="lblRecordTime">时间：</span><b class="txtRecordTime" id="stopBetTime"></b>-->
+    <!--<span class="lblRecordXJS">靴局：</span><b class="txtRecordXJS" id="stopBetXJS"></b>-->
+    <!--<span class="lblRecordTB">台号：</span><b class="txtRecordTB" id="stopBetTB"></b>-->
+    <!--<h1>投注表</h1>-->
+    <!--<hr/>-->
+    <!--<div class="st">-->
+    <!--<table class="weui-table weui-border-tb">-->
+    <!--<thead id="tbStopBetRecordHeader">-->
+
+    <!--</thead>-->
+    <!--<tbody id="tbStopBetRecord">-->
+    <!--</tbody>-->
+    <!--</table>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--<h1></h1>-->
+    <!--</div>-->
+    <!--结算界面-->
+    <div id="calbetrecordpannel" class="pop" style="display:none;z-index:2000">
+        <div class="box">
+            <b class="closeb" onclick="closeBox('calbetrecordpannel')"></b>
+            <span class="lblRecordTime">时间：</span><b class="txtRecordTime" id="calBetTime"></b>
+            <span class="lblRecordXJS">靴局：</span><b class="txtRecordXJS" id="calBetXJS"></b>
+            <span class="lblRecordTB">台号：</span><b class="txtRecordTB" id="calBetTB"></b>
+            <h1>结算表</h1>
+            <hr/>
+            <div class="st">
+                <div class="inputqy">
+                    <div style="float: left; width: 30%">
+                        <span>闲牌: </span><span id="playerpoker" style="color:blue;font-weight:400;"></span>
+                    </div>
+                    <div style="float: left; width: 40%; text-align: center;font-size: 16px;  font-weight: 600;">
+                        <span id="txtGameResult"></span>
+                    </div>
+                    <div style="float: right; width: 30%">
+                        <span>庄牌: </span><span id="bankerpoker" style="color:red;font-weight:400;"></span>
+                    </div>
+                </div>
+                <table class="weui-table weui-border-tb">
+                    <thead>
+                    <tr>
+                        <th width="40%">昵称</th>
+                        <th width="30%">结果</th>
+                        <th width="30%">余额</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tbCalBetRecord">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <h1></h1>
+    </div>
+    <!--打开游戏教程-->
+    <div id="teachpannel" class="pop" style="display: none; z-index: 2000">
+        <div class="box">
+            <b class="closeb" onclick="closeBox('teachpannel')"></b>
+            <h1>下注指令说明</h1>
+            <span id="game_rule_text">
+                {$game_rule_text}
+            </span>
+
+            <!--<h1>下注指令说明</h1>-->
+            <!--<hr/>-->
+            <!--<div class="st">-->
+            <!--《下注指令说明》<br/>-->
+            <!--指令说明:不能识别中文指令，如押庄100，不能庄100，只能z100。字母大小写都可以（同一指令大小写要一致，比如庄对，可以zd或者ZD，但是不能Zd<br/>-->
+            <!--指令明细:-->
+            <!--<br/>-->
+            <!--1.庄:z或者Z-->
+            <!--<br/>-->
+            <!--2.闲:x或者X-->
+            <!--<br/>-->
+            <!--3.三宝:sb或者SB-->
+            <!--<br/>-->
+            <!--4.对子:d或者D-->
+            <!--<br/>-->
+            <!--5.和:h或者H-->
+            <!--<br/>-->
+            <!--6.庄对:zd或者ZD-->
+            <!--<br/>-->
+            <!--7.闲对:xd或者XD-->
+            <!--<br/>-->
+            <!--8.幸运六:l或者L-->
+            <!--<br/>-->
+            <!--9.撤注:c或者C-->
+            <!--<br/>-->
+            <!--10.查看当局下注记录和余分：？-->
+            <!--<br/>-->
+            <!--<span style="color: red">温馨提示:此系统没有梭哈指令。</span><br/>-->
+            <!--重要提示:《一行一命令》每局投注后，系统提示投注成功即为生效，否则此局投注无效需重新投注。<br/>-->
+            <!--举例：要押庄100三宝50，先输入z100发送成功后再输入sb50发送，不能z100sb50同时多个指令发送。<br/>-->
+            <!--<span style="color: red">* 本系统累计叠加下注，同时支持庄闲对打，改注必须先撤注再投注。</span><br/>-->
+            <!--<span style="color: red">* 开奖牌点统一用黑桃</span>♠<span style="color: red">花色表示。</span> <br/>-->
+            <!--<span style="color: red">* 下注必须指令在前，注码在后。比如：x100有效，100x无效</span><br/>-->
+            <!--</div>-->
+
+            <h1></h1>
+        </div>
+    </div>
+    <!--打开结果信息-->
+    <div id="resultinfopannel" class="pop" style="display:none; z-index: 2000">
+        <div class="box2" onclick="closeresultinfo()">
+            <b class="closeb" onclick="closeBox('resultinfopannel')"></b>
+            <h1 style="color:white;">游戏结果</h1>
+            <div class="st_resultinfo">
+                <div>
+                    <span>靴局：</span><span class="resultInfo_X_JS"></span> &nbsp; &nbsp;
+                    <span class="resultInfo_ResultWin"></span><span class="resultInfo_ResultPair"
+                                                                    style="color:white;"></span>
+                </div>
+                <div style="color:#4a97da;">
+                    <span>闲：</span><span class="resultInfo_X_Point"></span>
+                </div>
+                <div class="resultInfo_X_Img">
+
+                </div>
+                <div style="color:#b51410;">
+                    <span>庄：</span><span class="resultInfo_Z_Point"></span>
+                </div>
+                <div class="resultInfo_Z_Img">
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--打开换台页面-->
+    <div id="changetbpannel" class="pop" style="display:none; z-index: 2000;">
+        <div class="box2">
+            <b class="closeb" onclick="closeBox('changetbpannel')"></b>
+            <h1 style="color:white;text-align:center;margin-right:15px;"><img
+                    src="/front/images/salon/group.png?v=1006"
+                    style="width:30px;height:30px;"/>选择游戏台</h1>
+            <ul class="tblist">
+            </ul>
+        </div>
+    </div>
+    <!--打开休场页面-->
+    <div id="restgamepannel" class="pop" style="display:none; z-index: 2000;">
+        <div class="box2">
+            <div class="stopgame">
+                <div class="breturn">
+                    <a class="btnreturn" onclick="backtomessagepage();closeBox('restgamepannel');">返回首页</a>
+                </div>
+                <div class="babout">
+                    <img style="width: 180px;height: 150px" src="/front/images/salon/group.png?v=1005"/>
+                </div>
+                <div class="xiuchang">
+                    <span>休场中...</span>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!--视频界面-->
+    <div id="videopannel" style=" display:none;position: fixed; top: 25px; left: 0; right: 0; z-index: 1500;background-color: #3e3e3e">
+        <input type="hidden" id="wsLink"/>
+        <div onclick="closevedio()">
+                <canvas id="videoCanvas" width="1920" height="1080">
+
+                </canvas>
+            <!--<iframe src="" width="100%" name="topFrame" scrolling="No"-->
+                    <!--noresize="noresize" frameborder="0" id="mainiframe"></iframe>-->
+        </div>
+        <div style="width:45px;height:24px;line-height:24px; font-size:12px; background:url(/front/images/taihao.jpg);background-size:100% 100%;position:absolute; left: 15px;top:20px; text-align:center;">
+            <span class="taihao"></span>
+        </div>
+    </div>
+    <!--路单界面2 -->
+    <div id="roadpannel2" class="road-card q-touch"
+         style="display:none;position: fixed; top: 25px; left: 0; right: 0; z-index: 1500;background:white; ">
+        <div class="road" onclick="closeroad2()">
+            <div class="scroller scroll">
+                <div style="position: relative">
+                    <span style="position: absolute;bottom: -2px;right: 2px;color: #E6E6E6;font-size: 14px;font-weight: bold;">大路</span>
+                    <table class="big_road big_road_1">
+                        <tbody class="tb_big_road">
+                        </tbody>
+                    </table>
+                </div>
+                <div class="clear"></div>
+                <div class="sc_left_container">
+
+                    <span style="position: absolute;bottom: -2px;right: 51%;color: #E6E6E6;font-size: 14px;font-weight: bold;">大眼仔</span>
+                    <table class="big_eye_road big_eye_road_1">
+                        <tbody class="tb_big_eye_road">
+                        </tbody>
+                    </table>
+
+
+                    <span style="position: absolute;bottom: -2px;right: 5px;color: #E6E6E6;font-size: 14px;font-weight: bold;">曱甴路</span>
+                    <table class="cockroach_road cockroach_road_1">
+                        <tbody class="tb_cockroach_road">
+                        </tbody>
+                    </table>
+
+
+                </div>
+                <div class="clear"></div>
+                <div class="sc_left_container">
+
+                    <span style="position: absolute;bottom: -2px;right: 51%;color: #E6E6E6;font-size: 14px;font-weight: bold;">小路</span>
+                    <table class="small_road small_road_1">
+                        <tbody class="tb_small_road">
+                        </tbody>
+                    </table>
+
+
+                    <span style="position: absolute;bottom: -2%;right: 5px;color: #E6E6E6;font-size: 14px;font-weight: bold;">三星路</span>
+                    <table class="sanxing_road sanxing_road_1">
+                        <tbody class="tb_sanxing_road">
+                        </tbody>
+                    </table>
+
+
+                    <!--<div class="detail_road">-->
+                    <!--<div class="predict-detail">-->
+                    <!--<p class="game-stat-blue message-detail">局数</p>-->
+                    <!--<div class="predict-el predict-x-js">-->
+                    <!--</div>-->
+                    <!--</div>-->
+                    <!--<div class="predict-detail">-->
+                    <!--<p class="game-stat-blue message-detail">闲</p>-->
+                    <!--<div class="predict-el predict-x-count">-->
+                    <!--</div>-->
+                    <!--</div>-->
+                    <!--<div class="predict-detail">-->
+                    <!--<p class="game-stat-red message-detail">庄</p>-->
+                    <!--<div class="predict-el predict-z-count">-->
+                    <!--</div>-->
+                    <!--</div>-->
+                    <!--<div class="predict-detail">-->
+                    <!--<p class="game-stat-blue message-detail">和</p>-->
+                    <!--<div class="predict-el predict-h-count">-->
+                    <!--</div>-->
+                    <!--</div>-->
+                    <!--<div class="predict-detail">-->
+                    <!--<p class="game-stat-red message-detail">闲对</p>-->
+                    <!--<div class="predict-el predict-xd-count">-->
+                    <!--</div>-->
+                    <!--</div>-->
+                    <!--<div class="predict-detail">-->
+                    <!--<p class="game-stat-red message-detail">庄对</p>-->
+                    <!--<div class="predict-el predict-zd-count">-->
+                    <!--</div>-->
+                    <!--</div>-->
+                    <!--</div>-->
+                </div>
+                <div class="clear"></div>
+                <div class="cube-road">
+                    <span style="position: absolute; bottom: 0px;right: 50%;color: #E6E6E6;font-size: 14px;font-weight: bold;z-index: 2;">珠子路</span>
+                    <table class="cube_road cube_road_1">
+                        <tbody class="tb_cube_road">
+                        </tbody>
+                    </table>
+                    <div style="width: 50%;float: left;position: relative;border:1px solid #ccc;margin-left: 1px">
+                        <div class="cube-road-ju" style="font-size: 12px;line-height:12px;height:12px;padding:2px 0px;text-align: center;border-bottom: 1px solid #ccc;">
+
+                        </div>
+                        <div style="position: absolute;top:16px;left:0px;bottom: 0%;width: 40%;border-right: 1px solid #ccc;">
+
+                            <div style="width:100%;height:75%;padding: 5%;
+    box-sizing: border-box;">
+                                <img src="/front/images/salon/grouplogo.png?v=1005"
+                                     style="display:block; margin: 0 auto; height: 100%;"/>
+                            </div>
+                            <div style="width:100%;height:25%; font-size:12px; font-weight:600; text-align:center;  ">
+                                <span>台号:</span><span class="taihao"></span>
+                            </div>
+
+                        </div>
+                        <div style="position: absolute;top:16px;left:40%;bottom: 0%;width: 10%;border-right: 1px solid #ccc;">
+                            <div class="tips"
+                                 style="color: #4390D3;font-size:12px;font-weight: bold;text-align: center;line-height: 140%;    writing-mode: vertical-lr;
+    width: 100%;height: 100%;display: flex;justify-content: center;align-items: center;">下局提示</div>
+
+                        </div>
+                        <div style="position: absolute;top:16px;right:0px;width: 50%;bottom: 0px;">
+                            <div class="predict_container">
+                                <div class="predict-b" style="display: flex;justify-content: center;align-items: center;border-bottom: 1px solid #ccc;">
+                                    <div style="float: left;width: 25%;border-right: 1px solid #ccc;height: 100%;display: flex;justify-content: center;align-items: center;">
+                                        <div class="game-stat-red message-red" style="float: left;">庄</div>
+                                    </div>
+                                    <div class="predict predict_be" style="float: left;width: 24%;box-sizing: border-box;border-right: 1px solid #ccc;height: 100%;display: flex;justify-content: center;align-items: center;">
+
+                                    </div>
+                                    <div class="predict predict_sr" style="float: left;width: 24%;box-sizing: border-box;border-right: 1px solid #ccc;height: 100%;display: flex;justify-content: center;align-items: center;">
+
+                                    </div>
+                                    <div class="predict predict_cr" style="float: left;width: 27%;padding: 10px;box-sizing: border-box;height: 100%;display: flex;justify-content: center;align-items: center;">
+
+                                    </div>
+                                </div>
+                                <div class="predict-p" style="display: flex;justify-content: center;align-items: center;">
+                                    <div style="float: left;width: 25%;border-right: 1px solid #ccc;height: 100%;display: flex;justify-content: center;align-items: center;">
+                                        <div class="game-stat-blue message-blue">闲</div>
+                                    </div>
+
+                                    <div class="predict predict_be" style="float: left;width: 24%;box-sizing: border-box;border-right: 1px solid #ccc;height: 100%;display: flex;justify-content: center;align-items: center;">
+
+                                    </div>
+                                    <div class="predict predict_sr" style="float: left;width: 24%;box-sizing: border-box;border-right: 1px solid #ccc;height: 100%;display: flex;justify-content: center;align-items: center;">
+
+                                    </div>
+                                    <div class="predict predict_cr" style="float: left;width: 27%;padding: 10px;box-sizing: border-box;height: 100%;display: flex;justify-content: center;align-items: center;">
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--头像界面-->
+    <!--<div id="headpannel" class="pop" style="display:none;z-index:1000">-->
+    <!--<div class="box">-->
+    <!--<b class="closeb" onclick="closeBox('headpannel')"></b>-->
+    <!--<h1>选择头像</h1>-->
+    <!--<hr/>-->
+    <!--<div class="st">-->
+    <!--<a class="selHead">-->
+    <!--<img src="/upload/headimage/head1.png" id="imghead1"-->
+    <!--alt="/upload/headimage/head1.png"/></a>-->
+    <!--<a class="selHead">-->
+    <!--<img src="/upload/headimage/head2.png" id="imghead2"-->
+    <!--alt="/upload/headimage/head2.png"/></a>-->
+    <!--<a class="selHead">-->
+    <!--<img src="/upload/headimage/head3.png" id="imghead3"-->
+    <!--alt="/upload/headimage/head3.png"/></a>-->
+    <!--<a class="selHead">-->
+    <!--<img src="/upload/headimage/head4.png" id="imghead4"-->
+    <!--alt="/upload/headimage/head4.png"/></a>-->
+    <!--<a class="selHead">-->
+    <!--<img src="/upload/headimage/head5.png" id="imghead5"-->
+    <!--alt="/upload/headimage/head5.png"/></a>-->
+    <!--<a class="selHead">-->
+    <!--<img src="/upload/headimage/head6.png" id="imghead6"-->
+    <!--alt="/upload/headimage/head6.png"/></a>-->
+    <!--<a class="selHead">-->
+    <!--<img src="/upload/headimage/head7.png" id="imghead7"-->
+    <!--alt="/upload/headimage/head7.png"/></a>-->
+    <!--<a class="selHead">-->
+    <!--<img src="/upload/headimage/head8.png" id="imghead8"-->
+    <!--alt="/upload/headimage/head8.png"/></a>-->
+    <!--<a class="selHead">-->
+    <!--<img src="/upload/headimage/head9.png" id="imghead9"-->
+    <!--alt="/upload/headimage/head9.png"/></a>-->
+    <!--<a class="selHead">-->
+    <!--<img src="/upload/headimage/head10.png" id="imghead10"-->
+    <!--alt="/upload/headimage/head10.png"/></a>-->
+    <!--<a class="selHead">-->
+    <!--<img src="/upload/headimage/head11.png" id="imghead11"-->
+    <!--alt="/upload/headimage/head11.png"/></a>-->
+    <!--<a class="selHead">-->
+    <!--<img src="/upload/headimage/head12.png" id="imghead12"-->
+    <!--alt="/upload/headimage/head12.png"/></a>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--<h1></h1>-->
+    <!--</div>-->
+
+    <!--下注键盘界面-->
+    <div id="keyboardpannel"
+    style="display:none; position:fixed; bottom:0; left: 0; right: 0; z-index: 1300; width:100%;">
+    <div class="keyboard" onclick="closekb()">
+    <div class="kb-row-1">
+    <div class="p1 xian" id="kb_xd">
+    <div class="zh-name">闲对</div>
+    <div class="en-name">PLAYER PAIR</div>
+    <div class="account">
+    </div>
+    </div>
+    <div class="p2 he" id="kb_h">
+    <div class="zh-name">和</div>
+    <div class="en-name">TIE</div>
+    <div class="account">
+    </div>
+    </div>
+    <div class="p3 zhuang" id="kb_zd">
+    <div class="zh-name">庄对</div>
+    <div class="en-name">BANKER PAIR</div>
+    <div class="account">
+    </div>
+    </div>
+    </div>
+    <div class="kb-row-1">
+    <div class="p1 xian" id="kb_x">
+    <div class="zh-name">闲</div>
+    <div class="en-name">PLAYER</div>
+    <div class="account">
+    </div>
+    </div>
+    <div class="p2 zhuang" id="kb_z">
+    <div class="zh-name">庄</div>
+    <div class="en-name">BANKER</div>
+    <div class="account">
+    </div>
+    </div>
+    <div class="p3 luckysix" id="kb_xy">
+    <div class="zh-name">幸运六</div>
+    <div class="en-name">LUCKY SIX</div>
+    <div class="account">
+    </div>
+    </div>
+    </div>
+    </div>
+    <div class="chips">
+    <div class="chip_model">
+    <div class="chip_leftbutton">
+    <a href="javascript:;" id="btnresetback" value="1" class="weui-btn weui-btn_mini weui-btn_primary"
+    style="box-shadow: 0px 0px 0px 0px #555;background:#9e9d9e;">退出</a>
+    </div>
+    <div class="chip_middlul">
+    <ul id="list-unstyled">
+    <li title="10">
+    <img src="/front/images/chips/Chip1.png"/>
+    <span>10</span>
+    </li>
+    <li title="50">
+    <img src="/front/images/chips/Chip2.png"/>
+    <span>50</span>
+    </li>
+    <li title="100">
+    <img src="/front/images/chips/Chip3.png"/>
+    <span>100</span>
+    </li>
+    <li title="200">
+    <img src="/front/images/chips/Chip4.png"/>
+    <span>200</span>
+    </li>
+    <li title="500">
+    <img src="/front/images/chips/Chip5.png"/>
+    <span>500</span>
+    </li>
+    <li title="1000">
+    <img src="/front/images/chips/Chip6.png"/>
+    <span>1千</span>
+    </li>
+    <li title="2000">
+    <img src="/front/images/chips/Chip7.png"/>
+    <span>2千</span>
+    </li>
+    <li title="5000">
+    <img src="/front/images/chips/Chip8.png"/>
+    <span>5千</span>
+    </li>
+    <li title="10000">
+    <img src="/front/images/chips/Chip9.png"/>
+    <span>1万</span>
+    </li>
+    <li title="20000">
+    <img src="/front/images/chips/Chip10.png"/>
+    <span>2万</span>
+    </li>
+    <li title="50000">
+    <img src="/front/images/chips/Chip11.png"/>
+    <span>5万</span>
+    </li>
+    <li title="100000">
+    <img src="/front/images/chips/Chip12.png"/>
+    <span>10万</span>
+    </li>
+    </ul>
+    </div>
+    <div class="chip_rightbutton">
+    <a href="javascript:;" id="btnsendBet" class="weui-btn weui-btn_mini weui-btn_primary"
+    style="box-shadow: 0px 0px 0px 0px #555;">确定</a>
+    </div>
+    </div>
+    </div>
+
+</div>
+
+</div>
+
+</body>
+<script type="text/javascript">
+//    FastClick.attach(document.body);
+//    function changeFrameHeight() {
+//        var ifm = document.getElementById("mainiframe");
+//        ifm.height = document.documentElement.clientHeight / 3;
+//    }
+//    window.onresize = function () {
+//        changeFrameHeight();
+//    }
+//    $(function () {
+//        changeFrameHeight();
+//    });
+</script>
+
+<!--<script>(function() {var _53code = document.createElement("script");_53code.src = "https://tb.53kf.com/code/code/0226377a0d3ba62b4d1c67d0a41bc2969/1";var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(_53code, s);})();</script>-->
+
+
