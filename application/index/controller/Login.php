@@ -1208,7 +1208,7 @@ class Login
             
             $arr = parse_url($im_url['server_url']);
             $arr_query = $this->convertUrlQuery($arr['query']);
-            $playid = substr(md5($uid . $member['reg_time']), 0, 10);
+            $playid = substr(md5($uid . $uid), 0, 10);
             User::where('uid', $uid)->update(['playid' => $playid]);//
        
                 if (strpos($member['head'], 'http') !== false) {
