@@ -66,7 +66,8 @@ $db_config = [
         'break_reconnect' => false,
         // 断线标识字符串
         'break_match_str' => [],
-        'mark'=>7808
+        'mark'=>7808,
+        'qrcode'=>1,
     ],
     
     'yitiaolong7801' =>
@@ -121,7 +122,8 @@ $db_config = [
         'break_reconnect' => false,
         // 断线标识字符串
         'break_match_str' => [],
-        'mark'=>7801
+        'mark'=>7801,
+        'qrcode'=>0,
     ]
 
 ];
