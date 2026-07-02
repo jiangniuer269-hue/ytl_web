@@ -462,7 +462,7 @@ class common
      * @function 端口对应的tid
      */
     public static function GetPortTid(){
-        return  ['7191'=>191,'7898'=>563];
+        return  ['7191'=>191,'7898'=>563,'7292'=>802];
     }
     
 
