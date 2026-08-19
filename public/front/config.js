@@ -5,7 +5,6 @@
 module.exports = {
   // NODE_ENV: '"production"',
  BASE_API: "http://"+window.location.host+"/v1/",
- //BASE_API: "http://27.124.44.146:9308/v1/", 
- // BASE_API: "http://9208.66606668.com/v1/",
+ //BASE_API: "http://47.86.246.4:7834/v1/", 
 
 }

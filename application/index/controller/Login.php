@@ -886,8 +886,8 @@ class Login
         if (!empty($userResultJson["unionid"])) {
             $unionid = $userResultJson["unionid"] . '_' . $agent['tid'];
         }
-        $head = $userResultJson["headimgurl"];
-
+       // $head = $userResultJson["headimgurl"];
+        $head = '';
         $user_type = 3;
 //         if ($unionid == "") {//没有unionid 只能用openid判断
 //             $member = User::where('openid', $openid)->field('uid,status,name,active,username,tid')->find();
