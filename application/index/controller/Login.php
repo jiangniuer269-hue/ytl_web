@@ -1177,7 +1177,7 @@ class Login
             // http://shangshui_im.shanghaimetal.org
             //http://shangshui_im.yiweidao.cn/
              $im_url_arr = [
-                 'http://47.86.246.4:8788',
+                 'http://47.101.143.146:8788',
 
              ];
              if (in_array( $member['tid'],[5,262,560])) {
